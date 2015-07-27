@@ -86,6 +86,17 @@ subnet 10.224.0.0 netmask 255.255.0.0 {
 ```
 sudo reboot
 ```
+##Munin
+```
+sudo apt-get install munin-node
+```
+```
+sudo nano /etc/munin/munin-node.conf
+```
+```
+allow ^89\.163\.150\.82$
+```
+port 4949 im host frei machen
 
 #Mapserver
 ##Backend
