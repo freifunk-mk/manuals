@@ -37,7 +37,6 @@ mtu 1280;
 secure handshakes yes;
 log to syslog level verbose;
 status socket "/tmp/fastd.sock";
-user "fastd";
 
 on up "
   ip link set address 04:EE:EF:CA:FE:3A dev tap0
