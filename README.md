@@ -17,7 +17,7 @@ sudo mkdir fichtenfunk
 cd fichtenfunk
 ```
 ```
-sudo nano dummy
+sudo mkdir dummy
 ```
 ```
 sudo nano fastd.conf
