@@ -63,8 +63,29 @@ secret "xxx";
 ```
 ##DHCP Server
 ```
+sudo apt-get install isc-dhcp-server 
 cd /etc/dhcp
 sudo nano dhcpd.conf
+```
+```
+authoritative;
+subnet 10.224.0.0 netmask 255.255.0.0 {
+        range 10.224.25.0 10.224.32.254;
+        default-lease-time 300;
+        max-lease-time 600;
+        option domain-name "ffis01.freifunk-iserlohn.de";
+        option domain-name-servers 10.224.24.1;
+        option broadcast-address 10.224.24.255;
+        option subnet-mask 255.255.0.0;
+        option routers 10.224.24.1;
+        interface br0
+        interface bat0
+        interface tap0
+        interface tap1
+}
+```
+```
+sudo reboot
 ```
 
 #Mapserver
