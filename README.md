@@ -111,3 +111,9 @@ cd /home/chrisno/ffmap-backend && python3 backend.py --with-rrd -d /var/www/json
 grunt
 ```
 nach /var/www/meshviewer/
+
+Cache leeren
+```
+cd /var/www/json
+sudo rm nodes.json
+```
