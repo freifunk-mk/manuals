@@ -17,18 +17,58 @@ sudo nano /etc/ssh/ssh_config
 ```
 Folgende Zeilen hinzufügen und speichern und server erneut rebooten.
 ```
-sudo reboot
-```
-```
 PasswordAuthentication no
 UsePAM no
+```
+```
+sudo reboot
 ```
 ##System Aktualisieren
 ```
 sudo apt-get update
 sudo apt-get dist upgrade
 ```
+##Fastd einrichten
+sudo nano /etc/apt/sources.list
+```
+deb http://repo.universe-factory.net/debian/ sid main
+```
+```
+sudo apt-get update
+sudo apt-get install fastd
+```
+```
+cd /etc/fastd
+sudo mkdir backbone
+cd backbone
+fastd --generate-key
+sudo nano secret.conf
+secret "xxx";
+```
+```
+bind any:10001 default ipv4;
+include "secret.conf";
+include peers from "server";
+interface "tap1";
+log level info;
+mode tap;
+method "null";
+method "salsa2012+umac";
+mtu 1364;
+secure handshakes yes;
+log to syslog level verbose;
+```
+```
+sudo mkdir server
+cd server
+sudo nano fichtenfunk01
+```
+```
+# Knotenname: node01
+key "xxx";
+remote ipv4 "fichtenfunk01.freifunk.ruhr" port 10001;
 
+```
 ##Batman-adv
 ```
 sudo modprobe batman-adv
