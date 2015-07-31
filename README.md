@@ -1,4 +1,34 @@
+#Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 14.04 LTS
+Die Anleitung ist in Arbeit.
 #Supernode
+##Installation
+Nichts besonderes, bei der Gelegenheit einfach gleich den OpenSSH Server mitinstallieren.
+##ssh Key hinterlegen
+```
+nano ~/.ssh/authorized_key
+```
+Key einfügen, Datei speichern, nano beenden und server rebooten.
+```
+sudo reboot
+```
+per keyfile am Server anmelden und wenn das klappt den login per passwort abschalten
+```
+sudo nano /etc/ssh/ssh_config
+```
+Folgende Zeilen hinzufügen und speichern und server erneut rebooten.
+```
+sudo reboot
+```
+```
+PasswordAuthentication no
+UsePAM no
+```
+##System Aktualisieren
+```
+sudo apt-get update
+sudo apt-get dist upgrade
+```
+
 ##Batman-adv
 ```
 sudo modprobe batman-adv
