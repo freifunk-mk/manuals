@@ -70,10 +70,22 @@ remote ipv4 "fichtenfunk01.freifunk.ruhr" port 10001;
 
 ```
 ##Batman-adv
+http://www.open-mesh.org/projects/open-mesh/wiki/Download
+cd ~
+wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2015.0.tar.gz
+tar -xf batman-adv-2015.0.tar.gz
+cd batman-adv-2015.0
+sudo apt-get install build-essential
+make
+sudo make install
+sudo apt-get install batctl
+
 ```
 sudo modprobe batman-adv
 sudo batctl gwl
 ```
+Error - mesh has not been enabled yet
+Activate your mesh by adding interfaces to batman-adv
 batman-adv in die /etc/modules eintragen
 ```
 sudo nano /etc/modules
@@ -148,9 +160,6 @@ subnet 10.224.0.0 netmask 255.255.0.0 {
         option subnet-mask 255.255.0.0;
         option routers 10.224.24.1;
         interface br0
-        interface bat0
-        interface tap0
-        interface tap1
 }
 ```
 ```
