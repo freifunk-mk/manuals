@@ -181,6 +181,7 @@ port 4949 im host frei machen
 aliases.json
 ```
 chown ffmap /var/run/alfred.sock
+chown -R ffmap /var/www/json
 cd /home/chrisno/ffmap-backend && python3 backend.py --with-rrd -d /var/www/json/ -a /home/chrisno/ffmap-backend/aliases.json
 ```
 
