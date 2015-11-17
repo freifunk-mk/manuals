@@ -73,9 +73,9 @@ remote ipv4 "fichtenfunk01.freifunk.ruhr" port 10001;
 http://www.open-mesh.org/projects/open-mesh/wiki/Download
 ```
 cd ~
-wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2015.0.tar.gz
-tar -xf batman-adv-2015.0.tar.gz
-cd batman-adv-2015.0
+wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2015.1.tar.gz
+tar -xf batman-adv-2015.1.tar.gz
+cd batman-adv-2015.1
 sudo apt-get install build-essential
 make
 sudo make install
@@ -117,7 +117,6 @@ hide ip addresses yes;
 mtu 1280;
 secure handshakes yes;
 log to syslog level verbose;
-status socket "/tmp/fastd.sock";
 
 on up "
   ip link set address 04:EE:EF:CA:FE:3A dev tap0
@@ -129,7 +128,6 @@ on up "
 ";
 
 on verify "
-  /etc/fastd/fastd-blacklist.sh $PEER_KEY
 ";
 ```
 ```
@@ -153,10 +151,7 @@ subnet 10.224.0.0 netmask 255.255.0.0 {
         range 10.224.25.0 10.224.32.254;
         default-lease-time 300;
         max-lease-time 600;
-        option domain-name "ffis01.freifunk-iserlohn.de";
-        option domain-name-servers 10.224.24.1;
-        option broadcast-address 10.224.24.255;
-        option subnet-mask 255.255.0.0;
+        option domain-name-servers 8.8.8.8;
         option routers 10.224.24.1;
         interface br0
 }
@@ -164,6 +159,12 @@ subnet 10.224.0.0 netmask 255.255.0.0 {
 ```
 sudo reboot
 ```
+##Trafficabwurf mit Nat z.B. lokal
+-s die Quelle
+-o das Outputinterface
+````
+iptables -t nat -A POSTROUTING -s 10.224.0.0/16 -o eth0 -j MASQUERADE
+````
 ##Munin
 ```
 sudo apt-get install munin-node
