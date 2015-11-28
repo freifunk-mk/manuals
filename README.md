@@ -164,6 +164,7 @@ sudo reboot
 -o das Outputinterface
 ````
 iptables -t nat -A POSTROUTING -s 10.224.0.0/16 -o eth0 -j MASQUERADE
+ip6tables -t nat -A POSTROUTING -s 2001:0db8:0100:f101::/64 -o eth1 -j MASQUERADE
 ````
 ##Munin
 ```
