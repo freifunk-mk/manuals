@@ -1,5 +1,8 @@
-#Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 14.04 LTS
+#Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 16.04 LTS
 Die Anleitung ist in Arbeit.
+Bitte in den Branches schauen für andere / aktuellere Versionen dieser Anleitung!
+##Einleitung
+Wir bauen hier ein Active/Passive Failover Setup mit einem Aktiven Supernode für die Domäne und einem zweiten Standby node für die Ausfallsicherheit.
 #Supernode
 ##Installation
 Nichts besonderes, bei der Gelegenheit einfach gleich den OpenSSH Server mitinstallieren.
@@ -166,17 +169,13 @@ sudo reboot
 iptables -t nat -A POSTROUTING -s 10.224.0.0/16 -o eth0 -j MASQUERADE
 ip6tables -t nat -A POSTROUTING -s 2001:0db8:0100:f101::/64 -o eth1 -j MASQUERADE
 ````
-##Munin
+##Check_MK
 ```
-sudo apt-get install munin-node
-```
-```
-sudo nano /etc/munin/munin-node.conf
+sudo apt-get install xinetd gdebi
 ```
 ```
-allow ^89\.163\.150\.82$
+sudo gdebi check-mk-agent_1.2.6p15-1_all.deb
 ```
-port 4949 im host frei machen
 
 #Mapserver
 ##Backend
