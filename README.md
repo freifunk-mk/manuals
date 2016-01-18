@@ -1,5 +1,5 @@
 #Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 14.04 LTS
-Die Anleitung ist in Arbeit.
+Bitte in den Branches schauen für andere / aktuellere Versionen dieser Anleitung!
 #Supernode
 ##Installation
 Nichts besonderes, bei der Gelegenheit einfach gleich den OpenSSH Server mitinstallieren.
