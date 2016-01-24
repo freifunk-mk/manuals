@@ -29,7 +29,7 @@ sudo reboot
 ##System Aktualisieren
 ```
 sudo apt-get update
-sudo apt-get dist upgrade
+sudo apt-get dist-upgrade
 ```
 ##Fastd einrichten
 sudo nano /etc/apt/sources.list
@@ -65,8 +65,8 @@ https://wiki.ubuntuusers.de/Kernelmodule#start
 ##Client Fastd
 ```
 cd /etc/fastd
-sudo mkdir fichtenfunk
-cd fichtenfunk
+sudo mkdir client
+cd client
 ```
 ```
 sudo mkdir dummy
@@ -82,7 +82,6 @@ interface "tap0";
 log level info;
 mode tap;
 method "salsa2012+umac";
-method "null";
 peer limit 200;
 hide ip addresses yes;
 mtu 1280;
@@ -90,16 +89,21 @@ secure handshakes yes;
 log to syslog level verbose;
 
 on up "
-  ip link set address 04:EE:EF:CA:FE:3A dev tap0
-  ip link set up dev tap0
-  batctl -m bat0 if add $INTERFACE
-  ip link set address 02:EE:EF:CA:FF:3A dev bat0
-  ip link set up dev bat0
-  brctl addif br0 bat0
+        ip link set address 04:EE:EF:CA:FE:3A dev tap0
+        ip link set up tap0
+        batctl -m bat0 if add $INTERFACE
+        ip link set address 02:EE:EF:CA:FE:FF:3A dev bat0
+        ip link set up dev bat0
+        brctl addif br0 bat0
+        batctl -m bat0 it 5000
+        batctl -m bat0 bl 0
+        batctl -m bat0 gw server 48mbit/48mbit
+        batctl -m bat0 vm server
 ";
 
 on verify "
 ";
+
 ```
 ```
 fastd --generate-key
@@ -118,25 +122,22 @@ sudo nano dhcpd.conf
 ```
 ```
 authoritative;
-subnet 10.224.0.0 netmask 255.255.0.0 {
-        range 10.224.25.0 10.224.32.254;
+subnet 172.16.0.0 netmask 255.255.0.0 {
+        range 172.16.1.1 172.16.10.254;
         default-lease-time 300;
         max-lease-time 600;
         option domain-name-servers 8.8.8.8;
-        option routers 10.224.24.1;
-        interface br0
+        option routers 172.16.0.1;
+        interface br0;
 }
 ```
 ```
 sudo reboot
 ```
-##Trafficabwurf mit Nat z.B. lokal
--s die Quelle
--o das Outputinterface
-````
-iptables -t nat -A POSTROUTING -s 10.224.0.0/16 -o eth0 -j MASQUERADE
-ip6tables -t nat -A POSTROUTING -s 2001:0db8:0100:f101::/64 -o eth1 -j MASQUERADE
-````
+
+Hier klafft eine große lücke
+
+#Monitoring
 ##Check_MK
 ```
 sudo apt-get install xinetd gdebi
@@ -144,24 +145,30 @@ sudo apt-get install xinetd gdebi
 ```
 sudo gdebi check-mk-agent_1.2.6p15-1_all.deb
 ```
-
-#Mapserver
-##Backend
-aliases.json
+##vnstat
 ```
-chown ffmap /var/run/alfred.sock
-chown -R ffmap /var/www/json
-cd /home/chrisno/ffmap-backend && python3 backend.py --with-rrd -d /var/www/json/ -a /home/chrisno/ffmap-backend/aliases.json
+sudo apt-get install vnstat vnstati lighttpd
+cd /var/www
+sudo mkdir vnstats
+cd vnstats
+mkdir eth0
+cd ..
+sudo rm *.html
+sudo nano index.html
 ```
-
-##Frontend meshviewer
 ```
-grunt
+<img src="vnstats/eth0/summary.png"><br>
+<img src="vnstats/eth0/hours.png"><br>
+<img src="vnstats/eth0/days.png"><br>
+<img src="vnstats/eth0/months.png"><br>
 ```
-nach /var/www/meshviewer/
-
-Cache leeren
 ```
-cd /var/www/json
-sudo rm nodes.json
+sudo crontab -e
+```
+Vier Zeilen hinzufügen
+```
+*/5 * * * * vnstati -i eth0 -o /var/www/vnstats/eth0/hours.png -h
+*/5 * * * * vnstati -i eth0 -o /var/www/vnstats/eth0/days.png -d
+*/5 * * * * vnstati -i eth0 -o /var/www/vnstats/eth0/months.png -m
+*/5 * * * * vnstati -i eth0 -o /var/www/vnstats/eth0/summary.png -s
 ```
