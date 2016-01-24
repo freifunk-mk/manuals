@@ -61,6 +61,13 @@ batman-adv in die /etc/modules eintragen
 ```
 sudo nano /etc/modules
 ```
+```
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+batman-adv
+```
 https://wiki.ubuntuusers.de/Kernelmodule#start
 
 ##Client Fastd
@@ -159,9 +166,9 @@ iface br0 inet static
         post-up ip route add 172.17.0.0/16 dev br0 table 42
 
 iface br0 inet6 static
-        address 2a03:2260:120::1
+        address 2a03:2260:120:xxx::1
         netmask 48
-        post-up ip -6 route add 2a03:2260:120:xxx:/56 dev br0 table 42
+        post-up ip -6 route add 2a03:2260:120:xxx::/56 dev br0 table 42
 ```
 Und Gre Tunnel für jeden Backbone standort:
 ```
@@ -290,17 +297,143 @@ domain (ip ip6) {
 ```
 Eine Runde Bird installieren
 ```
-sudo apt-get install bird birdc
+sudo apt-get install bird
 ```
 Und configs anlegen
 ```
-cd /etc
-sudo mkdir bird
 sudo nano /etc/bird/bird.conf
 ```
 ```
-ll
+#table ffrl;
+router id 185.66.195.xx;
+
+protocol direct announce {
+        table master; # implizit
+        import where net ~ [185.66.195.xx/32];
+        interface "tun-ffrl-uplink";
+};
+
+protocol kernel {
+        table master;
+        device routes;
+        import none; # ihr wollt nichts aus der kernel routing tabelle lernen
+        export filter {
+                #  setze src addr beim route-export in kernel tabelle
+                krt_prefsrc = 185.66.195.xx;
+                accept;
+        };
+        kernel table 42;
+};
+
+protocol device {
+        scan time 15;
+};
+
+function is_default() {
+        return (net ~ [0.0.0.0/0]);
+};
+
+template bgp uplink {
+        local as 65xxx;
+        import where is_default();
+        export where proto = "announce";
+};
+
+protocol bgp ffrl_ber_a from uplink {
+        source address 100.64.2.xxx;
+        neighbor 100.64.2.xxx as 201701;
+};
+
 ```
+Den letzten Block für alle backbone standorte analog zu den gre tunneln wiederholen
+
+Nun nochmal das ganze in IPv6
+```
+sudo nano /etc/bird/bird6.conf
+```
+```
+#table ffrl;
+router id 185.66.195.xx;
+
+protocol direct announce {
+        table master; # implizit
+        import where net ~ [2a03:2260:120:xxx::/56];
+        interface "tun-ffrl-uplink";
+};
+
+protocol kernel {
+        table master;
+        device routes;
+        import none; # ihr wollt nichts aus der kernel routing tabelle lernen
+        export filter {
+                #  setze src addr beim route-export in kernel tabelle
+                krt_prefsrc = 2a03:2260:120:xxx::1;
+                accept;
+        };
+        kernel table 42;
+};
+
+protocol device {
+        scan time 15;
+};
+
+function is_default() {
+        return (net ~ [::/0]);
+};
+
+template bgp uplink {
+        local as 65xxx;
+        import where is_default();
+        export where proto = "announce";
+};
+
+protocol bgp ffrl_ber_a from uplink {
+        source address 2a03:2260:0:xxx::2;
+        neighbor 2a03:2260:0:xxx::1 as 201701;
+};
+```
+Und den letzten Block wieder entsprechend vervielfältigen
+
+##Testen
+einmal neustarten
+```
+sudo reboot
+```
+Und jetzt mal die bgp4 session prüfen
+```
+sudo birdc s p
+```
+Sollte nun so aussehen
+```
+BIRD 1.4.0 ready.
+name     proto    table    state  since       info
+announce Direct   master   up     2016-01-19  
+kernel1  Kernel   master   up     2016-01-19  
+device1  Device   master   up     2016-01-19  
+ffrl_ber_a BGP      master   up     2016-01-19  Established   
+ffrl_ber_b BGP      master   up     2016-01-19  Established   
+ffrl_dus_a BGP      master   up     2016-01-19  Established   
+ffrl_dus_b BGP      master   up     2016-01-19  Established 
+```
+Und für IPv6
+```
+sudo birdc6 s p
+```
+Sollte so aussehen
+```
+BIRD 1.4.0 ready.
+name     proto    table    state  since       info
+announce Direct   master   up     2016-01-19  
+kernel1  Kernel   master   up     2016-01-19  
+device1  Device   master   up     2016-01-19  
+ffrl_ber_a BGP      master   up     2016-01-19  Established   
+ffrl_ber_b BGP      master   up     2016-01-19  Established   
+ffrl_dus_a BGP      master   up     2016-01-19  Established   
+ffrl_dus_b BGP      master   up     2016-01-19  Established   
+```
+Wenn es nicht direkt läuft einfach mal 2-5 Minuten warten, bgp kann dauern
+
+Dann mal sehen ob batman nun läuft
 
 
 
