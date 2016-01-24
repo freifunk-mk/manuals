@@ -16,7 +16,7 @@ sudo reboot
 ```
 per keyfile am Server anmelden und wenn das klappt den login per passwort abschalten
 ```
-sudo nano /etc/ssh/ssh_config
+sudo nano /etc/ssh/sshd_config
 ```
 Folgende Zeilen hinzufügen und speichern und server erneut rebooten.
 ```
