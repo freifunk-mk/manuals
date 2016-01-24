@@ -40,45 +40,13 @@ deb http://repo.universe-factory.net/debian/ sid main
 sudo apt-get update
 sudo apt-get install fastd
 ```
-```
-cd /etc/fastd
-sudo mkdir backbone
-cd backbone
-fastd --generate-key
-sudo nano secret.conf
-secret "xxx";
-```
-```
-bind any:10001 default ipv4;
-include "secret.conf";
-include peers from "server";
-interface "tap1";
-log level info;
-mode tap;
-method "null";
-method "salsa2012+umac";
-mtu 1364;
-secure handshakes yes;
-log to syslog level verbose;
-```
-```
-sudo mkdir server
-cd server
-sudo nano fichtenfunk01
-```
-```
-# Knotenname: node01
-key "xxx";
-remote ipv4 "fichtenfunk01.freifunk.ruhr" port 10001;
-
-```
 ##Batman-adv
 http://www.open-mesh.org/projects/open-mesh/wiki/Download
 ```
 cd ~
-wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2015.1.tar.gz
-tar -xf batman-adv-2015.1.tar.gz
-cd batman-adv-2015.1
+wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2015.1.2.tar.gz
+tar -xf batman-adv-2015.1.2.tar.gz
+cd batman-adv-2015.1.2
 sudo apt-get install build-essential
 make
 sudo make install
