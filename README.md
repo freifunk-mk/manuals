@@ -8,7 +8,7 @@ Wir bauen hier ein Active/Passive Failover Setup mit einem Aktiven Supernode fü
 Nichts besonderes, bei der Gelegenheit einfach gleich den OpenSSH Server mitinstallieren.
 ##ssh Key hinterlegen
 ```
-nano ~/.ssh/authorized_key
+nano ~/.ssh/authorized_keys
 ```
 Key einfügen, Datei speichern, nano beenden und server rebooten.
 ```
