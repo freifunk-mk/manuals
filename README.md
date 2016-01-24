@@ -450,7 +450,7 @@ sudo gdebi check-mk-agent_1.2.6p15-1_all.deb
 ##vnstat
 ```
 sudo apt-get install vnstat vnstati lighttpd
-cd /var/www
+cd /var/www/html
 sudo mkdir vnstats
 cd vnstats
 mkdir eth0
