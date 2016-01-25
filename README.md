@@ -433,6 +433,11 @@ ffrl_dus_b BGP      master   up     2016-01-19  Established
 ```
 Wenn es nicht direkt läuft einfach mal 2-5 Minuten warten, bgp kann dauern
 
+Wenn das kommt:
+bird: Cannot create control socket /run/bird/bird.ctl: No such file or directory
+
+hilft cd /run und sudo mkdir bird
+
 Dann mal sehen ob batman nun läuft
 
 
