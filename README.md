@@ -1,4 +1,4 @@
-#Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 16.04 LTS
+#Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 14.04.3 LTS
 Die Anleitung ist in Arbeit.
 Bitte in den Branches schauen für andere / aktuellere Versionen dieser Anleitung!
 ##Einleitung
