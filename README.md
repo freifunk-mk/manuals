@@ -1,3 +1,4 @@
+#ACHTUNG! Nicht verwenden! Diese Doku ist veraltet. Schau auf Eulenfunk.de für eine aktuelle Doku.
 #Anleitung zum Aufsetzen eines Freifunk Supernodes auf Ubuntu Server 14.04.3 LTS
 Die Anleitung ist in Arbeit.
 Bitte in den Branches schauen für andere / aktuellere Versionen dieser Anleitung!
